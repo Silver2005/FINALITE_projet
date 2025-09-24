@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle Demande de Matériel</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #f8fafc;
+            --text: #1e293b;
+            --text-light: #64748b;
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --border: #e2e8f0;
+            --gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+            --shadow-lg: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            --radius: 16px;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gradient);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            line-height: 1.7;
+            color: var(--text);
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(30px);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-lg);
+            padding: 50px;
+            width: 100%;
+            max-width: 1000px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark), #8b5cf6);
+            background-size: 200% 100%;
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, var(--text), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+            border-radius: 2px;
+        }
+
+        .section-header {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text);
+            margin: 40px 0 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+            position: relative;
+        }
+
+        .section-header::before {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 60px;
+            height: 2px;
+            background: var(--primary);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--text);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            padding: 16px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            font-size: 16px;
+            transition: var(--transition);
+            background: white;
+            color: var(--text);
+            font-family: inherit;
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%2364768b'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            background-size: 20px;
+            padding-right: 50px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+            transform: translateY(-2px);
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .formset-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .formset-table th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 14px;
+        }
+
+        .formset-table td {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            background: white;
+        }
+
+        .formset-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .formset-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .add-line-btn {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 30px;
+        }
+
+        .add-line-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px -8px var(--success);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 20px;
+            justify-content: flex-end;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .submit-button, .cancel-button {
+            padding: 16px 32px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 8px 25px -8px var(--primary);
+        }
+
+        .cancel-button {
+            background: transparent;
+            color: var(--text-light);
+            border: 2px solid var(--border);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px -10px var(--primary);
+        }
+
+        .cancel-button:hover {
+            border-color: var(--error);
+            color: var(--error);
+            transform: translateY(-2px);
+        }
+
+        .submit-button::before, .cancel-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .submit-button:hover::before, .cancel-button:hover::before {
+            left: 100%;
+        }
+
+        .errorlist {
+            list-style: none;
+            color: var(--error);
+            font-size: 14px;
+            margin-top: 5px;
+            animation: slideDown 0.3s ease;
+        }
+
+        .errorlist li {
+            padding: 4px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .errorlist li::before {
+            content: '⚠';
+            font-size: 12px;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            h1 {
+                font-size: 28px;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .formset-table {
+                display: block;
+                overflow-x: auto;
+            }
+            
+            .section-header {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px 15px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            input, select, textarea {
+                padding: 14px 16px;
+            }
+        }
+
+        /* Améliorations spécifiques Django */
+        .formset-row td {
+            position: relative;
+        }
+
+        .formset-row td input, .formset-row td select {
+            width: 100%;
+            margin: 0;
+        }
+
+        .delete-checkbox {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .delete-checkbox input {
+            width: auto;
+            transform: scale(1.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📦 Nouvelle Demande de Matériel</h1>
+        <form method="post">
+            {% csrf_token %}
+
+            {{ form.non_field_errors }}
+            {{ formset.non_form_errors }}
+
+            <div class="section-header">📋 Détails de la demande</div>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label>Justification</label>
+                    {{ form.justification }}
+                    {{ form.justification.errors }}
+                </div>
+                <div class="form-group">
+                    <label>Nature des prestations</label>
+                    {{ form.nature_des_prestations }}
+                    {{ form.nature_des_prestations.errors }}
+                </div>
+                <div class="form-group">
+                    <label>Fournisseur</label>
+                    {{ form.fournisseur }}
+                    {{ form.fournisseur.errors }}
+                </div>
+                <div class="form-group">
+                    <label>Imputation</label>
+                    {{ form.imputation }}
+                    {{ form.imputation.errors }}
+                </div>
+                <div class="form-group">
+                    <label>Crédit</label>
+                    {{ form.credit }}
+                    {{ form.credit.errors }}
+                </div>
+            </div>
+
+            <div class="section-header">📦 Articles</div>
+            {{ formset.management_form }}
+            <table class="formset-table">
+                <thead>
+                    <tr>
+                        <th>Article</th>
+                        <th>Quantité</th>
+                        <th style="width: 80px;">Supprimer</th>
+                    </tr>
+                </thead>
+                <tbody id="formset-container">
+                    {% for form in formset %}
+                    <tr class="formset-row">
+                        <td>{{ form.article }}</td>
+                        <td>{{ form.quantite }}</td>
+                        <td class="delete-checkbox">{{ form.DELETE }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="button" id="add-more" class="add-line-btn">
+                ➕ Ajouter une ligne
+            </button>
+
+            <div class="button-group">
+                <button type="button" class="cancel-button" onclick="history.back()">
+                    ❌ Annuler
+                </button>
+                <button type="submit" class="submit-button">
+                    ✅ Valider la Demande
+                </button>
+            </div>
+        </form>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#add-more').click(function() {
+                var form_idx = $('#id_lignes-TOTAL_FORMS').val();
+                var newForm = `
+                    <tr class="formset-row">
+                        <td>{{ formset.empty_form.article }}</td>
+                        <td>{{ formset.empty_form.quantite }}</td>
+                        <td class="delete-checkbox">{{ formset.empty_form.DELETE }}</td>
+                    </tr>`
+                    .replace(/__prefix__/g, form_idx)
+                    .replace(/<select/g, '<select style="width: 100%"')
+                    .replace(/<input/g, '<input style="width: 100%"');
+
+                $('#formset-container').append(newForm);
+                $('#id_lignes-TOTAL_FORMS').val(parseInt(form_idx) + 1);
+            });
+
+            // Animation des éléments du formulaire
+            $('.form-group input, .form-group select, .form-group textarea').each(function(index) {
+                $(this).css({
+                    'opacity': '0',
+                    'transform': 'translateY(20px)'
+                });
+                
+                setTimeout(() => {
+                    $(this).animate({
+                        'opacity': '1',
+                        'transform': 'translateY(0)'
+                    }, 400);
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
+</html>

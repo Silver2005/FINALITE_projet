@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Quittance de Demande</title>
+    <style>
+        body { font-family: sans-serif; }
+        .header { text-align: center; margin-bottom: 2cm; }
+        .details { margin-bottom: 1cm; }
+        .table-articles { width: 100%; border-collapse: collapse; }
+        .table-articles th, .table-articles td { border: 1px solid #000; padding: 8px; text-align: left; }
+        .total { text-align: right; margin-top: 2cm; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Quittance de Demande de Matériel</h1>
+        <p><strong>N° de Demande :</strong> {{ demande.numero }}</p>
+        <p><strong>Date :</strong> {{ demande.date|date:"d/m/Y" }}</p>
+    </div>
+
+    <div class="details">
+        <p><strong>Bénéficiaire :</strong> {{ demande.beneficiaire.first_name }} {{ demande.beneficiaire.last_name }}</p>
+        <p><strong>Fournisseur :</strong> {{ demande.fournisseur.nom }}</p>
+        <p><strong>Justification :</strong> {{ demande.justification }}</p>
+    </div>
+
+    <table class="table-articles">
+        <thead>
+            <tr>
+                <th>Code Article</th>
+                <th>Désignation</th>
+                <th>Quantité</th>
+                <th>Prix Unitaire</th>
+                <th>Total Ligne</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for ligne in lignes %}
+            <tr>
+                <td>{{ ligne.article.code_article }}</td>
+                <td>{{ ligne.article.designation }}</td>
+                <td>{{ ligne.quantite }}</td>
+                <td>{{ ligne.article.prix_unitaire }} TTC</td>
+                <td>{{ ligne.total_ligne }} TTC</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
